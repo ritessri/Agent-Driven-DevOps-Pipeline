@@ -1,0 +1,421 @@
+
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-sans)}
+  .wrap{padding:16px 12px 24px}
+  .section-label{font-size:10px;font-weight:500;letter-spacing:.08em;color:var(--color-text-tertiary);text-transform:uppercase;margin-bottom:6px}
+  .phase{border:1px dashed var(--color-border-secondary);border-radius:10px;padding:12px 14px;margin-bottom:0}
+
+  /* nodes */
+  .node{border-radius:8px;padding:8px 12px;display:flex;flex-direction:column;gap:2px;cursor:pointer;transition:opacity .15s}
+  .node:hover{opacity:.85}
+  .node-title{font-size:12px;font-weight:500}
+  .node-sub{font-size:10px;opacity:.7}
+
+  .n-gray{background:var(--color-background-secondary);border:1px solid var(--color-border-secondary)}
+  .n-gray .node-title{color:var(--color-text-primary)}
+  .n-gray .node-sub{color:var(--color-text-secondary)}
+
+  .n-coral{background:#FAECE7;border:1px solid #F0997B}
+  .n-coral .node-title{color:#712B13}
+  .n-coral .node-sub{color:#993C1D}
+  @media(prefers-color-scheme:dark){
+    .n-coral{background:#4A1B0C;border-color:#993C1D}
+    .n-coral .node-title{color:#F5C4B3}
+    .n-coral .node-sub{color:#F0997B}
+  }
+
+  .n-purple{background:#EEEDFE;border:1px solid #AFA9EC}
+  .n-purple .node-title{color:#26215C}
+  .n-purple .node-sub{color:#534AB7}
+  @media(prefers-color-scheme:dark){
+    .n-purple{background:#26215C;border-color:#534AB7}
+    .n-purple .node-title{color:#CECBF6}
+    .n-purple .node-sub{color:#AFA9EC}
+  }
+
+  .n-teal{background:#E1F5EE;border:1px solid #5DCAA5}
+  .n-teal .node-title{color:#04342C}
+  .n-teal .node-sub{color:#0F6E56}
+  @media(prefers-color-scheme:dark){
+    .n-teal{background:#04342C;border-color:#0F6E56}
+    .n-teal .node-title{color:#9FE1CB}
+    .n-teal .node-sub{color:#5DCAA5}
+  }
+
+  .n-amber{background:#FAEEDA;border:1px solid #EF9F27}
+  .n-amber .node-title{color:#412402}
+  .n-amber .node-sub{color:#854F0B}
+  @media(prefers-color-scheme:dark){
+    .n-amber{background:#412402;border-color:#BA7517}
+    .n-amber .node-title{color:#FAC775}
+    .n-amber .node-sub{color:#EF9F27}
+  }
+
+  .n-red{background:#FCEBEB;border:1px solid #F09595}
+  .n-red .node-title{color:#501313}
+  .n-red .node-sub{color:#A32D2D}
+  @media(prefers-color-scheme:dark){
+    .n-red{background:#501313;border-color:#A32D2D}
+    .n-red .node-title{color:#F7C1C1}
+    .n-red .node-sub{color:#F09595}
+  }
+
+  .n-blue{background:#E6F1FB;border:1px solid #85B7EB}
+  .n-blue .node-title{color:#042C53}
+  .n-blue .node-sub{color:#185FA5}
+  @media(prefers-color-scheme:dark){
+    .n-blue{background:#042C53;border-color:#185FA5}
+    .n-blue .node-title{color:#B5D4F4}
+    .n-blue .node-sub{color:#85B7EB}
+  }
+
+  /* arrows */
+  .arrow-down{display:flex;justify-content:center;align-items:center;height:20px;color:var(--color-text-tertiary);font-size:14px;line-height:1}
+  .arrow-label{font-size:10px;color:var(--color-text-tertiary);text-align:center;margin-top:-4px;margin-bottom:2px}
+
+  /* build boxes row */
+  .build-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0}
+
+  /* product agents row */
+  .agents-row{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:6px 0}
+  .agent-pill{border-radius:6px;padding:5px 4px;text-align:center;font-size:10px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:transform .1s}
+  .agent-pill:hover{transform:translateY(-1px)}
+  .ap-soa{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489}
+  .ap-ums{background:#E1F5EE;border-color:#5DCAA5;color:#085041}
+  .ap-ohs{background:#FAEEDA;border-color:#EF9F27;color:#633806}
+  .ap-opss{background:#FAECE7;border-color:#F0997B;color:#712B13}
+  .ap-tpp{background:#E6F1FB;border-color:#85B7EB;color:#0C447C}
+  @media(prefers-color-scheme:dark){
+    .ap-soa{background:#26215C;border-color:#534AB7;color:#CECBF6}
+    .ap-ums{background:#04342C;border-color:#1D9E75;color:#9FE1CB}
+    .ap-ohs{background:#412402;border-color:#BA7517;color:#FAC775}
+    .ap-opss{background:#4A1B0C;border-color:#D85A30;color:#F5C4B3}
+    .ap-tpp{background:#042C53;border-color:#378ADD;color:#B5D4F4}
+  }
+
+  /* stage block */
+  .stage-block{border:1px solid var(--color-border-tertiary);border-radius:8px;overflow:visible;margin-bottom:0}
+  .stage-header{display:flex;gap:0;align-items:stretch}
+  .stage-num{width:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--color-text-tertiary);border-right:1px solid var(--color-border-tertiary)}
+  .stage-body{flex:1;padding:7px 10px}
+  .stage-name{font-size:12px;font-weight:500;color:var(--color-text-primary)}
+  .stage-tool{font-size:10px;color:var(--color-text-tertiary)}
+
+  /* gate row */
+  .gate-row{display:flex;align-items:center;gap:6px;margin:6px 0 2px}
+  .gate-diamond{width:52px;flex-shrink:0;height:28px;position:relative;display:flex;align-items:center;justify-content:center}
+  .gate-diamond svg{position:absolute;top:0;left:0}
+  .gate-label{font-size:10px;font-weight:500;position:relative;z-index:1;color:#412402}
+  @media(prefers-color-scheme:dark){.gate-label{color:#FAC775}}
+  .gate-pass{font-size:10px;color:var(--color-text-secondary);white-space:nowrap}
+  .gate-fail-wrap{flex:1;display:flex;align-items:center;gap:4px;justify-content:flex-end}
+  .fail-label{font-size:10px;color:#A32D2D}
+  @media(prefers-color-scheme:dark){.fail-label{color:#F7C1C1}}
+  .retry-box{background:#FAEEDA;border:1px solid #EF9F27;border-radius:5px;padding:3px 7px;font-size:10px;color:#633806;cursor:pointer}
+  @media(prefers-color-scheme:dark){.retry-box{background:#412402;border-color:#BA7517;color:#FAC775}}
+  .abort-box{background:#FCEBEB;border:1px solid #F09595;border-radius:5px;padding:3px 7px;font-size:10px;color:#791F1F;cursor:pointer}
+  @media(prefers-color-scheme:dark){.abort-box{background:#501313;border-color:#A32D2D;color:#F7C1C1}}
+
+  /* parallel band */
+  .parallel-band{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:5px 8px;background:var(--color-background-secondary);border-top:1px dashed var(--color-border-tertiary)}
+  .p-chip{border-radius:4px;padding:3px 0;text-align:center;font-size:9px;font-weight:500;opacity:.8}
+
+  /* observability sidebar */
+  .two-col{display:grid;grid-template-columns:1fr 180px;gap:10px;align-items:start}
+  .obs-panel{border:1px dashed var(--color-border-secondary);border-radius:8px;padding:8px 10px}
+  .obs-title{font-size:10px;font-weight:500;color:var(--color-text-tertiary);margin-bottom:6px}
+  .obs-item{font-size:10px;color:var(--color-text-secondary);padding:3px 0;border-bottom:1px solid var(--color-border-tertiary);display:flex;align-items:center;gap:5px}
+  .obs-item:last-child{border-bottom:none}
+  .obs-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+  /* human escalation */
+  .escalation{display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--color-border-secondary);border-radius:8px;margin-top:6px;background:var(--color-background-secondary)}
+  .esc-icon{font-size:16px}
+  .esc-text{font-size:11px;color:var(--color-text-secondary)}
+  .esc-badge{margin-left:auto;background:#EEEDFE;border:1px solid #AFA9EC;border-radius:4px;padding:2px 7px;font-size:10px;color:#3C3489}
+  @media(prefers-color-scheme:dark){.esc-badge{background:#26215C;border-color:#534AB7;color:#CECBF6}}
+
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;font-size:10px;color:var(--color-text-secondary)}
+  .leg{display:flex;align-items:center;gap:4px}
+  .leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+</style>
+
+<div class="wrap">
+
+  <!-- ══ BUILD PHASE ══ -->
+  <div class="phase">
+    <div class="section-label">Build phase</div>
+
+    <div class="node n-gray" onclick="sendPrompt('What triggers the DevOps build phase?')" style="text-align:center;border-radius:20px;padding:6px 12px">
+      <span class="node-title">Build trigger</span>
+    </div>
+    <div class="arrow-down">↓</div>
+
+    <div class="node n-coral" onclick="sendPrompt('What does the JSON orchestrator collect during the build phase?')">
+      <span class="node-title">JSON orchestrator</span>
+      <span class="node-sub">Collects product · release · platform → serialises to JSON context</span>
+    </div>
+    <div class="arrow-down">↓</div>
+
+    <div class="build-row">
+      <div class="node n-coral" onclick="sendPrompt('What happens during the compile step?')">
+        <span class="node-title">Compile</span>
+        <span class="node-sub">Source → artifacts</span>
+      </div>
+      <div class="node n-coral" onclick="sendPrompt('What does MavenSync resolve in the build phase?')">
+        <span class="node-title">MavenSync</span>
+        <span class="node-sub">Resolve dependencies</span>
+      </div>
+      <div class="node n-coral" onclick="sendPrompt('How are build artifacts packaged and tagged?')">
+        <span class="node-title">Package</span>
+        <span class="node-sub">Bundle · version tag</span>
+      </div>
+    </div>
+    <div class="arrow-down">↓</div>
+
+    <div class="node n-gray" onclick="sendPrompt('What is in the JSON context passed to the agent orchestrator?')" style="text-align:center;border-radius:20px;padding:6px 12px">
+      <span class="node-title">Build artifact + JSON context</span>
+    </div>
+  </div>
+
+  <div class="arrow-down" style="height:28px;font-size:16px">↓</div>
+  <div class="arrow-label">Passes JSON context to deployment phase</div>
+
+  <!-- ══ DEPLOYMENT PHASE ══ -->
+  <div class="phase">
+    <div class="section-label">Deployment phase</div>
+
+    <div class="node n-purple" onclick="sendPrompt('How does the agent orchestrator use LLM reasoning to decide the pipeline?')">
+      <span class="node-title">Agent orchestrator — LLM reasoning engine</span>
+      <span class="node-sub">Reads JSON · selects pipeline · dispatches product agents · monitors all stages · gates pass/fail</span>
+    </div>
+    <div class="arrow-down">↓</div>
+    <div style="font-size:10px;color:var(--color-text-tertiary);text-align:center;margin-bottom:4px">Activates product agents in parallel per stage</div>
+    <div class="agents-row">
+      <div class="agent-pill ap-soa" onclick="sendPrompt('What tools does the SOA agent use in deployment?')">SOA agent</div>
+      <div class="agent-pill ap-ums" onclick="sendPrompt('What tools does the UMS agent use in deployment?')">UMS agent</div>
+      <div class="agent-pill ap-ohs" onclick="sendPrompt('What tools does the OHS agent use in deployment?')">OHS agent</div>
+      <div class="agent-pill ap-opss" onclick="sendPrompt('What tools does the OPSS agent use in deployment?')">OPSS agent</div>
+      <div class="agent-pill ap-tpp" onclick="sendPrompt('What tools does the TPP agent use in deployment?')">TPP agent</div>
+    </div>
+    <div class="arrow-down">↓</div>
+
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:6px">
+
+        <!-- STAGE 1 PVT -->
+        <div class="stage-block">
+          <div class="stage-header">
+            <div class="stage-num">1</div>
+            <div class="stage-body">
+              <div class="stage-name">PVT — Patch Validation Tool</div>
+              <div class="stage-tool">Tools: static analyser · patch scanner · compliance checker</div>
+            </div>
+          </div>
+          <div class="parallel-band">
+            <div class="p-chip ap-soa">SOA ✓</div>
+            <div class="p-chip ap-ums">UMS ✓</div>
+            <div class="p-chip ap-ohs">OHS ✓</div>
+            <div class="p-chip ap-opss">OPSS ✓</div>
+            <div class="p-chip ap-tpp">TPP ✓</div>
+          </div>
+        </div>
+        <div class="gate-row">
+          <div class="gate-diamond">
+            <svg width="52" height="28"><polygon points="26,2 50,14 26,26 2,14" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1"/></svg>
+            <span class="gate-label">Pass?</span>
+          </div>
+          <span class="gate-pass">✓ Pass → next stage</span>
+          <div class="gate-fail-wrap">
+            <span class="fail-label">✗ Fail</span>
+            <div class="retry-box" onclick="sendPrompt('How does the agent self-heal a PVT failure?')">↻ Retry (×2)</div>
+            <div class="abort-box" onclick="sendPrompt('What happens when PVT aborts?')">Abort · escalate</div>
+          </div>
+        </div>
+
+        <!-- STAGE 2 ENV -->
+        <div class="stage-block">
+          <div class="stage-header">
+            <div class="stage-num">2</div>
+            <div class="stage-body">
+              <div class="stage-name">Env provisioning — Terraform</div>
+              <div class="stage-tool">Tools: Terraform IaC · state lock · platform selector</div>
+            </div>
+          </div>
+          <div class="parallel-band">
+            <div class="p-chip ap-soa">SOA</div>
+            <div class="p-chip ap-ums">UMS</div>
+            <div class="p-chip ap-ohs">OHS</div>
+            <div class="p-chip ap-opss">OPSS</div>
+            <div class="p-chip ap-tpp">TPP</div>
+          </div>
+        </div>
+        <div class="gate-row">
+          <div class="gate-diamond">
+            <svg width="52" height="28"><polygon points="26,2 50,14 26,26 2,14" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1"/></svg>
+            <span class="gate-label">Pass?</span>
+          </div>
+          <span class="gate-pass">✓ Pass → next stage</span>
+          <div class="gate-fail-wrap">
+            <span class="fail-label">✗ Fail</span>
+            <div class="retry-box" onclick="sendPrompt('How does the agent retry a Terraform provisioning failure?')">↻ Retry (×2)</div>
+            <div class="abort-box" onclick="sendPrompt('What happens when env provisioning aborts?')">Abort · escalate</div>
+          </div>
+        </div>
+
+        <!-- STAGE 3 PATCH VALIDATION -->
+        <div class="stage-block">
+          <div class="stage-header">
+            <div class="stage-num">3</div>
+            <div class="stage-body">
+              <div class="stage-name">Patch validation</div>
+              <div class="stage-tool">Tools: hotfix verifier · CVE scanner · compliance gate</div>
+            </div>
+          </div>
+          <div class="parallel-band">
+            <div class="p-chip ap-soa">SOA</div>
+            <div class="p-chip ap-ums">UMS</div>
+            <div class="p-chip ap-ohs">OHS</div>
+            <div class="p-chip ap-opss">OPSS</div>
+            <div class="p-chip ap-tpp">TPP</div>
+          </div>
+        </div>
+        <div class="gate-row">
+          <div class="gate-diamond">
+            <svg width="52" height="28"><polygon points="26,2 50,14 26,26 2,14" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1"/></svg>
+            <span class="gate-label">Pass?</span>
+          </div>
+          <span class="gate-pass">✓ Pass → next stage</span>
+          <div class="gate-fail-wrap">
+            <span class="fail-label">✗ Fail</span>
+            <div class="retry-box" onclick="sendPrompt('How does the agent self-heal a patch validation failure?')">↻ Retry (×2)</div>
+            <div class="abort-box" onclick="sendPrompt('What happens when patch validation aborts?')">Abort · escalate</div>
+          </div>
+        </div>
+
+        <!-- STAGE 4 TEST INVOCATION -->
+        <div class="stage-block">
+          <div class="stage-header">
+            <div class="stage-num">4</div>
+            <div class="stage-body">
+              <div class="stage-name">Test invocation</div>
+              <div class="stage-tool">Tools: unit runner · integration harness · regression suite</div>
+            </div>
+          </div>
+          <div class="parallel-band">
+            <div class="p-chip ap-soa">SOA</div>
+            <div class="p-chip ap-ums">UMS</div>
+            <div class="p-chip ap-ohs">OHS</div>
+            <div class="p-chip ap-opss">OPSS</div>
+            <div class="p-chip ap-tpp">TPP</div>
+          </div>
+        </div>
+        <div class="gate-row">
+          <div class="gate-diamond">
+            <svg width="52" height="28"><polygon points="26,2 50,14 26,26 2,14" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1"/></svg>
+            <span class="gate-label">Pass?</span>
+          </div>
+          <span class="gate-pass">✓ Pass → next stage</span>
+          <div class="gate-fail-wrap">
+            <span class="fail-label">✗ Fail</span>
+            <div class="retry-box" onclick="sendPrompt('How does the agent retry failed tests?')">↻ Retry (×2)</div>
+            <div class="abort-box" onclick="sendPrompt('What happens when test invocation aborts?')">Abort · escalate</div>
+          </div>
+        </div>
+
+        <!-- STAGE 5 FA TESTS -->
+        <div class="stage-block">
+          <div class="stage-header">
+            <div class="stage-num">5</div>
+            <div class="stage-body">
+              <div class="stage-name">FA tests invocation</div>
+              <div class="stage-tool">Tools: FA test harness · acceptance reporter · sign-off gate</div>
+            </div>
+          </div>
+          <div class="parallel-band">
+            <div class="p-chip ap-soa">SOA</div>
+            <div class="p-chip ap-ums">UMS</div>
+            <div class="p-chip ap-ohs">OHS</div>
+            <div class="p-chip ap-opss">OPSS</div>
+            <div class="p-chip ap-tpp">TPP</div>
+          </div>
+        </div>
+        <div class="gate-row">
+          <div class="gate-diamond">
+            <svg width="52" height="28"><polygon points="26,2 50,14 26,26 2,14" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1"/></svg>
+            <span class="gate-label">Pass?</span>
+          </div>
+          <span class="gate-pass">✓ Pass → report</span>
+          <div class="gate-fail-wrap">
+            <span class="fail-label">✗ Fail</span>
+            <div class="retry-box" onclick="sendPrompt('How does the agent retry FA test failures?')">↻ Retry (×2)</div>
+            <div class="abort-box" onclick="sendPrompt('What happens when FA tests abort?')">Abort · escalate</div>
+          </div>
+        </div>
+
+        <!-- AGGREGATION + FINAL REPORT -->
+        <div class="arrow-down">↓</div>
+        <div class="node n-purple" onclick="sendPrompt('How does the agent orchestrator aggregate results from all product agents?')">
+          <span class="node-title">Orchestrator aggregates results</span>
+          <span class="node-sub">Pass/fail per stage · per product · computes coverage + metrics</span>
+        </div>
+        <div class="arrow-down">↓</div>
+        <div class="node n-teal" onclick="sendPrompt('What is included in the final DevOps pipeline report?')">
+          <span class="node-title">Final report</span>
+          <span class="node-sub">Status per product · metrics · sign-off · audit trail</span>
+        </div>
+      </div>
+
+      <!-- OBSERVABILITY SIDEBAR -->
+      <div>
+        <div class="obs-panel">
+          <div class="obs-title">Observability agent (always-on)</div>
+          <div class="obs-item" onclick="sendPrompt('What does the observability agent log in a DevOps pipeline?')" style="cursor:pointer">
+            <div class="obs-dot" style="background:#5DCAA5"></div>Logs every tool call
+          </div>
+          <div class="obs-item" onclick="sendPrompt('How does trace propagation work across agents?')" style="cursor:pointer">
+            <div class="obs-dot" style="background:#5DCAA5"></div>Traces across agents
+          </div>
+          <div class="obs-item" onclick="sendPrompt('How does the pipeline monitor stage latency?')" style="cursor:pointer">
+            <div class="obs-dot" style="background:#EF9F27"></div>Stage latency metrics
+          </div>
+          <div class="obs-item" onclick="sendPrompt('How does the pipeline detect anomalies in test runs?')" style="cursor:pointer">
+            <div class="obs-dot" style="background:#EF9F27"></div>Anomaly detection
+          </div>
+          <div class="obs-item" onclick="sendPrompt('How does the pipeline alert on threshold breaches?')" style="cursor:pointer">
+            <div class="obs-dot" style="background:#E24B4A"></div>Alert on thresholds
+          </div>
+        </div>
+
+        <div style="height:10px"></div>
+
+        <div class="obs-panel">
+          <div class="obs-title">Artifact registry</div>
+          <div class="obs-item"><div class="obs-dot" style="background:#85B7EB"></div>Stores build artifacts</div>
+          <div class="obs-item"><div class="obs-dot" style="background:#85B7EB"></div>Versioned per product</div>
+          <div class="obs-item"><div class="obs-dot" style="background:#85B7EB"></div>Shared across stages</div>
+        </div>
+
+        <div style="height:10px"></div>
+
+        <div class="escalation" onclick="sendPrompt('When does a human need to intervene in an agentic DevOps pipeline?')" style="cursor:pointer">
+          <span class="esc-icon">👤</span>
+          <span class="esc-text">Human-in-the-loop escalation when agents cannot self-resolve</span>
+          <span class="esc-badge">HITL</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#F0997B;border:1px solid #D85A30"></div>Build phase</div>
+    <div class="leg"><div class="leg-dot" style="background:#AFA9EC;border:1px solid #7F77DD"></div>Orchestrator / LLM</div>
+    <div class="leg"><div class="leg-dot" style="background:#EF9F27;border:1px solid #BA7517;transform:rotate(45deg)"></div>Gate</div>
+    <div class="leg"><div class="leg-dot" style="background:#FAC775;border:1px solid #EF9F27"></div>Retry (self-heal)</div>
+    <div class="leg"><div class="leg-dot" style="background:#F09595;border:1px solid #E24B4A"></div>Abort path</div>
+    <div class="leg"><div class="leg-dot" style="background:#5DCAA5;border:1px solid #1D9E75"></div>Final report</div>
+  </div>
+</div>
